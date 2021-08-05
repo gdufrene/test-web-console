@@ -1,8 +1,5 @@
 package fr.gdufrene.appender;
 
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
-
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
 import javax.websocket.OnMessage;
@@ -10,27 +7,23 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
-@ServerEndpoint(value = "/console")
+import org.springframework.stereotype.Component;
+
+import fr.gdufrene.api.SessionRegistry;
+
+@ServerEndpoint(value = "/stream")
+@Component
 public class WSConsole {
 	
-	private static final Set<WSConsole> connections = new CopyOnWriteArraySet<>();
-	
-	private Session session;
-
 	@OnOpen
     public void start(Session session) {
-        this.session = session;
-        connections.add(this);
-        
-        session.getAsyncRemote().sendBinary(data);
+	    SessionRegistry.getInstance().add(session);
     }
-
 
     @OnClose
-    public void end() {
-        connections.remove(this);
+    public void end(Session session) {
+        SessionRegistry.getInstance().remove(session);
     }
-
 
     @OnMessage
     public void incoming(String message) {
@@ -38,7 +31,7 @@ public class WSConsole {
     }
 
     @OnError
-    public void onError(Throwable t) throws Throwable {
+    public void onError(Throwable t) {
         t.printStackTrace();
     }
 	

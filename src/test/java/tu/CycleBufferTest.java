@@ -27,6 +27,15 @@ public class CycleBufferTest {
 		assertEquals(10, res[0]);
 	}
 	
+   @Test
+    public void testWriteContinuously() throws IOException {
+        out.write("Hello\n".getBytes());
+        out.write("You".getBytes());
+        byte[] res = getBufferContent();
+        assertEquals(9, res.length);
+        System.out.println( new String(res) );
+    }
+	
 	private byte[] getBufferContent() throws IOException {
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		out.transfertContentTo(bos);

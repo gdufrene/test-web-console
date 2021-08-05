@@ -1,5 +1,6 @@
 package fr.gdufrene.appender;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -76,6 +77,17 @@ public class CycleOutputStream extends OutputStream {
 		
 		out.write(buffer, start, buffer.length - start);
 		out.write(buffer, 0, end + 1);
+	}
+	
+	@Override
+	public String toString() {
+	    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+	    try {
+	        transfertContentTo(bos);
+	    } catch (Exception e) {
+            return "";
+        }
+	    return bos.toString();
 	}
 
 }
